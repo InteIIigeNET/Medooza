@@ -1,3 +1,3 @@
 interface IDataParser {
-    fun Parse() : Array<Duplicate>
+    fun Parse(filename: String) : Array<Duplicate>
 }
