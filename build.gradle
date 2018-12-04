@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.7'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.9.7'
 }
 
 compileKotlin {
@@ -23,6 +25,7 @@ compileTestKotlin {
 intellij {
     version '2018.3'
 }
+
 patchPluginXml {
     changeNotes """
       Add change notes here.<br>
