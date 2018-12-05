@@ -3,7 +3,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class Duplicate(
     @set:JsonProperty("fragment")
     var fragments: Array<Fragment> = emptyArray(),
-    var cost     : Long?           = null
+    var cost     : Long?           = null,
+    var extractable : Boolean?     = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

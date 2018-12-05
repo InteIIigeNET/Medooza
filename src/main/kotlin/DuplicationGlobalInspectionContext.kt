@@ -5,7 +5,6 @@ import com.intellij.codeInspection.ex.InspectionToolWrapper
 import com.intellij.codeInspection.ex.Tools
 import com.intellij.codeInspection.lang.GlobalInspectionContextExtension
 import com.intellij.openapi.util.Key
-import com.intellij.refactoring.extractMethod.ExtractMethodProcessor
 
 
 class DuplicationGlobalInspectionContext : GlobalInspectionContextExtension<DuplicationGlobalInspectionContext> {
@@ -21,9 +20,6 @@ class DuplicationGlobalInspectionContext : GlobalInspectionContextExtension<Dupl
         context: GlobalInspectionContext
     ) {
 
-//        val processor = ExtractMethodProcessor(context.project, null, elements,
-//        null, "", "", null)
-//        processor.prepare(null)
     }
 
 
