@@ -1,42 +1,39 @@
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.psi.PsiExpression
-import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.compiler.progress.CompilerTask.getTextRange
+import com.intellij.psi.*
 import com.intellij.usages.ChunkExtractor.getStartOffset
-import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.PsiElement
 
 
+class PsiExtractor {
 
-class PsiExtractor() {
+    fun getPsiElements(project: Project, fragment: Fragment) : List<PsiElement> {
+        val virtualFile = LocalFileSystem.getInstance().findFileByPath(fragment.file!!)
+        val psiFile = PsiManager.getInstance(project).findFile(virtualFile!!)
 
-    fun getPsiElements(project: Project, duplicate: Duplicate) : List<PsiExpression> {
+        return getPsiElementFromRange(psiFile!!, fragment.start!!, fragment.end!!)
+    }
 
-        return duplicate.fragments.map { fragment ->
+    private fun getPsiElementFromRange(psiFile: PsiFile, startOffset: Int, endOffset: Int) : List<PsiElement>{
+        var element = psiFile.findElementAt(startOffset)
 
-            val virtualFile = LocalFileSystem.getInstance().findFileByPath(fragment.file!!)
-            val psiFile = PsiManager.getInstance(project).findFile(virtualFile!!)
-            var startOffset = fragment.start!!
-            var endOffset = fragment.end!!
-            val startElement = psiFile!!.findElementAt(startOffset)
-            val endElement = psiFile!!.findElementAt(endOffset - 1)
-            if (startElement is PsiWhiteSpace) {
-                startOffset = startElement.getTextRange().endOffset
+        var psiElements : MutableList<PsiElement> = mutableListOf(element!!)
+
+        var end = element.textRange.endOffset
+
+        while(end < endOffset)
+        {
+            element = psiFile.findElementAt(end)
+            if (element != null) {
+                psiElements.add(element)
+                end = element.textRange.endOffset
             }
-            if (endElement is PsiWhiteSpace) {
-                endOffset = endElement.getTextRange().startOffset
+            else{
+                ++end
             }
-            val psiElement = PsiTreeUtil.findElementOfClassAtRange(
-                psiFile!!,
-                startOffset,
-                endOffset,
-                PsiExpression::class.java
-            )
-            psiElement!!
-
         }
 
+        return psiElements
     }
 }

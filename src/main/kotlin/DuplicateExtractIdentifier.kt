@@ -5,10 +5,21 @@ class DuplicateExtractIdentifier {
     fun identify(project: Project, duplicates: Array<Duplicate>){
         val extractor = PsiExtractor()
         duplicates.map { duplicate ->
-            val elements = extractor.getPsiElements(project, duplicate)
-            val processor = ExtractMethodProcessor(project, null, elements.toTypedArray(),
-                null, "", "", null)
-            duplicate.extractable = processor.prepare()
+            try {
+                duplicate.fragments.forEach { fragment ->
+                    val elements = extractor.getPsiElements(project, fragment)
+                    val processor = ExtractMethodProcessor(
+                        project, null, elements.toTypedArray(),
+                        null, "", "", null
+                    )
+                    processor.prepare()
+                    processor.testPrepare(null, true)
+                    duplicate.extractable = true
+                }
+            }
+            catch(t: Throwable) {
+                duplicate.extractable = false
+            }
         }
     }
 }
