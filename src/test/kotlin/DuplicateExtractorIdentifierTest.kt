@@ -44,7 +44,7 @@ class DuplicateExtractorIdentifierTest : LightExtractorTestCase("src/test/resour
     private val filename = "test.xml"
 
     @Test
-    fun test() {
+    fun testExtractInlineData() {
         try {
             File(filename).createNewFile()
             File(filename).writeText(data)
@@ -62,5 +62,30 @@ class DuplicateExtractorIdentifierTest : LightExtractorTestCase("src/test/resour
         } finally {
             File(filename).delete()
         }
+    }
+
+    private val duplicatesXmlFilePath = "src/test/resources/duplicates.xml"
+
+    @Test
+    fun testExtractXmlData() {
+            val dataParser = DataParser()
+            val duplicates = dataParser.Parse(duplicatesXmlFilePath)
+
+            duplicates.forEach { duplicate ->
+                duplicate.fragments.forEach { fragment ->
+                    fragment.file = fragment.file!!.replace("file://\$PROJECT_DIR\$", projectPath)
+                }
+            }
+
+            DuplicateExtractIdentifier().identify(project, duplicates)
+
+            duplicates.forEach { duplicate ->
+                if (duplicate.exp == 1) {
+                    Assert.assertEquals(true, duplicate.extractable)
+                }
+                if (duplicate.exp == 0 || duplicate.exp == -1) {
+                    Assert.assertEquals(false, duplicate.extractable)
+                }
+            }
     }
 }

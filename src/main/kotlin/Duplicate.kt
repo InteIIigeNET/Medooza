@@ -4,7 +4,8 @@ data class Duplicate(
     @set:JsonProperty("fragment")
     var fragments: Array<Fragment> = emptyArray(),
     var cost     : Long?           = null,
-    var extractable : Boolean?     = null
+    var extractable : Boolean?     = null,
+    var exp : Int                  = 0
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
